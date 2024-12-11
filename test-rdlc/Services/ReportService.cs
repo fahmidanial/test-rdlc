@@ -1,8 +1,7 @@
 ﻿using Microsoft.Reporting.NETCore;
-using RDLC_Demo.Client.Models;
 using test_rdlc.Models;
 
-namespace RDLC_Demo.Client.Services
+namespace test_rdlc.Services
 {
     public class ReportService
     {
