@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject ReportService ReportService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>RDLC Print</PageTitle>
+
+<div class="text-center">
+    <h1 class="display-4">RDLC Print</h1>
+    <div class="mt-4">
+        <button class="btn btn-primary me-2" @onclick="ExportPDF">Export PDF</button>
+        <button class="btn btn-success me-2" @onclick="ExportExcel">Export Excel</button>
+    </div>
+</div>
+
+@code {
+    private async Task ExportPDF()
+    {
+        var reportBytes = ReportService.GenerateReport("PDF");
+        await SaveFile("Export.pdf", "application/pdf", reportBytes);
+    }
+
+    private async Task ExportExcel()
+    {
+        var reportBytes = ReportService.GenerateReport("EXCEL");
+        await SaveFile("Export.xls", "application/msexcel", reportBytes);
+    }
+
+    private async Task SaveFile(string fileName, string contentType, byte[] content)
+    {
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, contentType, content);
+    }
+}
