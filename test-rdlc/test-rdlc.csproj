@@ -12,8 +12,4 @@
 		<PackageReference Include="ReportViewerCore.NETCore" Version="15.1.19" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Reports\Report1.rdlc" />
-	</ItemGroup>
-
 </Project>

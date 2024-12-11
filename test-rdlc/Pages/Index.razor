@@ -1,6 +1,5 @@
 ﻿@page "/"
-@using test_rdlc.Services
-@inject ReportService ReportService
+@inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
 <PageTitle>RDLC Print</PageTitle>
@@ -16,14 +15,22 @@
 @code {
     private async Task ExportPDF()
     {
-        var reportBytes = ReportService.GenerateReport("PDF");
-        await SaveFile("Export.pdf", "application/pdf", reportBytes);
+        var response = await Http.GetAsync("api/report/generate/pdf");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsByteArrayAsync();
+            await SaveFile("Export.pdf", "application/pdf", content);
+        }
     }
 
     private async Task ExportExcel()
     {
-        var reportBytes = ReportService.GenerateReport("EXCEL");
-        await SaveFile("Export.xls", "application/msexcel", reportBytes);
+        var response = await Http.GetAsync("api/report/generate/excel");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsByteArrayAsync();
+            await SaveFile("Export.xls", "application/msexcel", content);
+        }
     }
 
     private async Task SaveFile(string fileName, string contentType, byte[] content)
