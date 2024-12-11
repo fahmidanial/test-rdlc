@@ -1,4 +1,5 @@
 ﻿using Microsoft.Reporting.NETCore;
+using System.Reflection;
 using test_rdlc.Models;
 
 namespace test_rdlc.Services
@@ -11,10 +12,18 @@ namespace test_rdlc.Services
             var parameters = new[] { new ReportParameter("Title", "Product Report") };
 
             var report = new LocalReport();
-            var assembly = typeof(Product).Assembly;
+            var assembly = Assembly.GetExecutingAssembly();
 
-            using (var rs = assembly.GetManifestResourceStream("RDLC_Demo.Client.Reports.Report1.rdlc"))
+            // Get all embedded resources to debug
+            var resources = assembly.GetManifestResourceNames();
+            var reportPath = resources.FirstOrDefault(x => x.EndsWith("Report1.rdlc"))
+                ?? throw new FileNotFoundException("Report1.rdlc not found in embedded resources");
+
+            using (var rs = assembly.GetManifestResourceStream(reportPath))
             {
+                if (rs == null)
+                    throw new FileNotFoundException($"Could not load report from resource: {reportPath}");
+
                 report.LoadReportDefinition(rs);
                 report.DataSources.Add(new ReportDataSource("DataSet1", items));
                 report.SetParameters(parameters);
